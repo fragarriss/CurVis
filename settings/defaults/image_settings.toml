@@ -1,0 +1,12 @@
+output_folder_path = "output/images"
+image_name = "output_image"
+t = 0.0
+l = 5.0
+theta = 1.5707963267948966192313216916398 # PI/2
+phi = 0.0
+forward_x = -1.0
+forward_y = 0.0
+forward_z = 0.0
+up_x = 0.0
+up_y = 0.0
+up_z = 1.0

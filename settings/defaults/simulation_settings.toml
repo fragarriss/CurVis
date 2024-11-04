@@ -1,0 +1,7 @@
+escape_radius = 100.0
+ray_integration_max_itarations = 40000
+ray_integration_step = 0.05
+sampling_initial_nums = 100
+sampling_max_iterations = 50
+sampling_convergence_threshold_1 = 1e-5
+sampling_convergence_threshold_2 = 1e-5
