@@ -207,7 +207,8 @@ fn image_main() -> Result<(), String> {
 
 fn main() {
 
-    env::set_var("RUST_BACKTRACE", "1");
+    // env::set_var("RUST_BACKTRACE", "1");
+    env::set_var("RUST_BACKTRACE", "full");
 
     // Dispatching based on the subcommand
 

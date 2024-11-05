@@ -21,7 +21,6 @@ pub mod settings {
 
     #[derive(Deserialize)]
     pub struct VideoSettings {
-        pub output_folder_path: PathBuf,
         pub video_name: String,
         pub frame_rate: f64,
         pub filepath_to_camera_path: PathBuf,
@@ -29,7 +28,6 @@ pub mod settings {
 
     impl Normalize for VideoSettings {
         fn normalize(&mut self) {
-            self.output_folder_path = resolve_path(&self.output_folder_path);
             self.filepath_to_camera_path = resolve_path(&self.filepath_to_camera_path);
         }
     }
@@ -59,7 +57,6 @@ pub mod settings {
 
     #[derive(Deserialize)]
     pub struct ImageSettings {
-        pub output_folder_path: PathBuf,
         pub image_name: String,
         pub t: f64,
         pub l: f64,
@@ -238,9 +235,13 @@ pub mod settings {
             
             // Checking if the file exists and if it is a .toml file
 
-            _ = ensure_is_toml_and_exists(toml_file_path)?;
+            ensure_is_toml_and_exists(toml_file_path)?;
 
-            let string = fs::read_to_string(toml_file_path).unwrap();
+            let string = match fs::read_to_string(toml_file_path) {
+                Ok(string) => { string }
+                Err(error) => { return Err(format!("Could not read file {toml_file_path:?} due to error: {error:?}")) }
+            };
+
             let read = toml::from_str(&string);
 
             match read

@@ -190,7 +190,7 @@ pub mod cli {
     }
 
     fn output_folder_path_from_matches(arg_matches: &ArgMatches) -> Result<PathBuf, String> {
-        return match arg_matches.get_one::<PathBuf>("output_folder") {
+        return match arg_matches.get_one::<String>("output_folder") {
             None => { 
                 // Using current working directory
                 let curr_dir = std::env::current_dir();
@@ -200,6 +200,7 @@ pub mod cli {
                 }
              }
             Some(file_path) => {
+                let file_path = &PathBuf::from(file_path);
                 check_filebuf_ref_exists(file_path)?;
                 check_filebuf_ref_is_folder(file_path)?;
                 Ok(PathBuf::from(file_path))
@@ -208,22 +209,22 @@ pub mod cli {
     }
     
     fn video_settings_from_matches(arg_matches: &ArgMatches) -> Result<VideoSettings, String> {
-        return match arg_matches.get_one("video_settings") {
+        return match arg_matches.get_one::<String>("video_settings") {
             None => { Ok(VideoSettings::default()) }
             Some(file_to_settings) => {
                 VideoSettings::from_toml_file(
-                    check_filebuf_ref_exists(file_to_settings)?
+                    check_filebuf_ref_exists(&PathBuf::from(file_to_settings))?
                 )
             }
         }
     }
 
     fn image_settings_from_matches(arg_matches: &ArgMatches) -> Result<ImageSettings, String> {
-        return match arg_matches.get_one("video_settings") {
+        return match arg_matches.get_one::<String>("video_settings") {
             None => { Ok(ImageSettings::default()) }
             Some(file_to_settings) => {
                 ImageSettings::from_toml_file(
-                    check_filebuf_ref_exists(file_to_settings)?
+                    check_filebuf_ref_exists(&PathBuf::from(file_to_settings))?
                 )
             }
         }
@@ -231,7 +232,7 @@ pub mod cli {
     
     fn metric_settings_from_matches (arg_matches: &ArgMatches)
         -> Result<Either<EllisMetricSettings, InterstellarMetricSettings>, String> {
-        return match arg_matches.get_one("metric_settings") {
+        return match arg_matches.get_one::<String>("metric_settings") {
             None => { Ok(Either::Left(EllisMetricSettings::default())) }
             Some(file_to_settings) => {
 
@@ -240,12 +241,12 @@ pub mod cli {
 
                 // (There must be a better way to write this nested mess...)
                 let settings = EllisMetricSettings::from_toml_file(
-                    check_filebuf_ref_exists(file_to_settings)?);
+                    check_filebuf_ref_exists(&PathBuf::from(file_to_settings))?);
                 match settings {
                     Ok(settings) => { Ok(Either::Left(settings)) }
                     Err(_string) => {
                         let settings = InterstellarMetricSettings::from_toml_file(
-                            check_filebuf_ref_exists(file_to_settings)?);
+                            check_filebuf_ref_exists(&PathBuf::from(file_to_settings))?);
                         match settings {
                             Ok(settings) => { Ok(Either::Right(settings))}
                             Err(_) => { Err(String::from("Could not read the metric configuration file.")) }
@@ -257,21 +258,21 @@ pub mod cli {
     }
 
     fn camera_settings_from_matches (arg_matches: &ArgMatches) -> Result<CameraSettings, String> {
-        return match arg_matches.get_one("camera_settings") {
+        return match arg_matches.get_one::<String>("camera_settings") {
             None => { Ok(CameraSettings::default()) }
             Some(file_to_settings) => {
                 CameraSettings::from_toml_file(
-                check_filebuf_ref_exists(file_to_settings)?)
+                check_filebuf_ref_exists(&PathBuf::from(file_to_settings))?)
             }
         }
     }
 
     fn simulation_settings_from_matches (arg_matches: &ArgMatches) -> Result<SimulationSettings, String> {
-        return match arg_matches.get_one("simulation_settings") {
+        return match arg_matches.get_one::<String>("simulation_settings") {
             None => { Ok(SimulationSettings::default()) }
             Some(file_to_settings) => {
                 SimulationSettings::from_toml_file(
-                check_filebuf_ref_exists(file_to_settings)?)
+                check_filebuf_ref_exists(&PathBuf::from(file_to_settings))?)
             }
         }
     }
