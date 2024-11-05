@@ -1,4 +1,3 @@
-output_folder_path = "output/videos/through"
 video_name = "output_video"
 frame_rate = 30.0
 filepath_to_camera_path = "paths/path_through.csv"
