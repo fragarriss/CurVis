@@ -220,7 +220,7 @@ pub mod cli {
     }
 
     fn image_settings_from_matches(arg_matches: &ArgMatches) -> Result<ImageSettings, String> {
-        return match arg_matches.get_one::<String>("video_settings") {
+        return match arg_matches.get_one::<String>("image_settings") {
             None => { Ok(ImageSettings::default()) }
             Some(file_to_settings) => {
                 ImageSettings::from_toml_file(
@@ -232,29 +232,32 @@ pub mod cli {
     
     fn metric_settings_from_matches (arg_matches: &ArgMatches)
         -> Result<Either<EllisMetricSettings, InterstellarMetricSettings>, String> {
+        
         return match arg_matches.get_one::<String>("metric_settings") {
+            
             None => { Ok(Either::Left(EllisMetricSettings::default())) }
+
             Some(file_to_settings) => {
 
                 // First I try reading the file as an ellis metric settings
-                // If it fails, I try again with the interstellar metric
+                // If it fails, I try again with the Interstellar metric
 
-                // (There must be a better way to write this nested mess...)
-                let settings = EllisMetricSettings::from_toml_file(
-                    check_filebuf_ref_exists(&PathBuf::from(file_to_settings))?);
-                match settings {
-                    Ok(settings) => { Ok(Either::Left(settings)) }
-                    Err(_string) => {
-                        let settings = InterstellarMetricSettings::from_toml_file(
-                            check_filebuf_ref_exists(&PathBuf::from(file_to_settings))?);
-                        match settings {
-                            Ok(settings) => { Ok(Either::Right(settings))}
-                            Err(_) => { Err(String::from("Could not read the metric configuration file.")) }
-                        }
-                    }
+                let file_path = PathBuf::from(file_to_settings);
+                check_filebuf_ref_exists(&file_path)?;
+
+                if let Ok(settings) = InterstellarMetricSettings::from_toml_file(&file_path) {
+                    Ok(Either::Right(settings))
                 }
+                else if let Ok(settings) = EllisMetricSettings::from_toml_file(&file_path) {
+                    Ok(Either::Left(settings))
+                }
+                else {
+                    Err(String::from("Could not read the metric configuration file."))
+                }
+
             }
         }
+
     }
 
     fn camera_settings_from_matches (arg_matches: &ArgMatches) -> Result<CameraSettings, String> {
