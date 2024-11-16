@@ -4,6 +4,8 @@ A Raytracer on Curved Spacetimes.
 
 Author: Francesco Garrisi
 
+![alt text](assets/CurVis_banner.jpg)
+
 ## Description
 
 CurVis is a Rust Package that allows rendering images and videos on curved spacetimes, by simulating the propagation of light using equations from General Relativity.
